@@ -1,5 +1,5 @@
-import { createElement as h } from './lib/Euid.js'
-import { createRoot } from './lib/EuidDOM.js'
+const { createElement: h } = React
+const { createRoot } = ReactDOM
 
 const h1Element = h('h1', {}, h('code', {}, 'bunx'), ' 명령')
 
@@ -11,7 +11,7 @@ const pElement = h(
     {
       href: 'https:bun.sh',
       rel: 'noopener noreferrer',
-      target: '_blank',
+      target: '_blank'
     },
     'Bun'
   ),
@@ -22,12 +22,7 @@ const pElement = h(
   '보다 약 100배 빠릅니다.'
 )
 
-const app = h(
-  'section',
-  { className: 'bunx-introduction' },
-  h1Element,
-  pElement
-)
+const app = h('section', { className: 'bunx-introduction' }, h1Element, pElement)
 
 const root = createRoot(document.querySelector('main'))
 root.render(app)
