@@ -24,22 +24,35 @@ export default function App(props) {
 
   // 배열의 forEach 메서드(값이 없음) ❌
   // 배열의 map 메서드(값을 반환) -> React.createElement() 내부에 사용 가능
-  const renderElements = Array.from({ length: 3 }).map((_, index) => {
-    return React.createElement(
-      Output,
-      {
-        key: index,
-        isAnimate: props.count < props.targetCount ? true : false
-      },
-      props.count + index
-    )
-  })
+  // const renderElements = Array.from({ length: 3 }).map((_, index) => {
+  //   return React.createElement(
+  //     Output,
+  //     {
+  //       key: index,
+  //       isAnimate: props.count < props.targetCount ? true : false
+  //     },
+  //     props.count + index
+  //   )
+  // })
 
   return React.createElement(
     'div',
     { className: 'randomCountUpApp' },
     React.createElement(Logo),
-    renderElements,
+    renderLists(3, props),
     React.createElement(Shortcut)
   )
+}
+
+function renderLists(count = 3, props) {
+  return Array.from({ length: count }).map((_, index) => {
+    return React.createElement(
+      Output,
+      {
+        key: crypto.randomUUID(),
+        isAnimate: props.count < props.targetCount ? true : false
+      },
+      props.count + index
+    )
+  })
 }
