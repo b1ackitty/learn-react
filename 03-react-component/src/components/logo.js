@@ -1,4 +1,4 @@
-export function Logo() {
+export default function Logo() {
   const logoElement = React.createElement(
     'svg',
     {

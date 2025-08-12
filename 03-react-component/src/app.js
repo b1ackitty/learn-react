@@ -1,6 +1,8 @@
-import { Logo } from './components/logo.js'
-import { Shortcut } from './components/shortcut.js'
-import Output from './components/output.js'
+// import { Logo } from './components/logo.js'
+// import { Shortcut } from './components/shortcut.js'
+// import Output from './components/output.js'
+
+import { Output, Logo, Shortcut } from './components/index.js'
 
 export default function App(props) {
   // 리스트 렌더링(List Rendering, Render Lists)
@@ -39,7 +41,7 @@ export default function App(props) {
     'div',
     { className: 'randomCountUpApp' },
     React.createElement(Logo),
-    renderLists(3, props),
+    renderLists(1, props),
     React.createElement(Shortcut)
   )
 }

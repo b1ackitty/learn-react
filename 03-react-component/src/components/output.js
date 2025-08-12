@@ -1,11 +1,11 @@
 export default function Output(props /* { children } */) {
-  let classNames = 'output'
+  // let classNames = 'output'
 
-  if (props.isAnimate) {
-    /* 컴포넌트 속성: 상태를 제어하는 클래스 이름 */
-    // console.log(props.isAnimate)
-    classNames += ' is-animate'
-  }
+  // if (props.isAnimate) {
+  //   classNames += ' is-animate'
+  // }
+
+  const classNames = `output ${props.isAnimate ? 'is-animate' : ''}`.trim()
 
   return React.createElement('output', { className: classNames }, props.children)
 }
