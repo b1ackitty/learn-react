@@ -3,29 +3,43 @@ import { Shortcut } from './components/shortcut.js'
 import Output from './components/output.js'
 
 export default function App(props) {
-  // 문(값이 없다)
-  // let isAnimate = true
+  // 리스트 렌더링(List Rendering, Render Lists)
+  // 배열(데이터)
 
-  // if (props.count >= props.targetCount) {
-  //   isAnimate = false
+  // 배열 순환문(for, while, for...of 등) -> 값이 없음(함수 내부에서 사용)
+  // let renderElements = []
+
+  // for (let i = 0; i < 3; i++) {
+  //   renderElements.push(
+  //     React.createElement(
+  //       Output,
+  //       {
+  //         key: i,
+  //         isAnimate: props.count < props.targetCount ? true : false
+  //       },
+  //       props.count + i
+  //     )
+  //   )
   // }
 
-  // 식(값이 있다)
-  // const isComplete = props.count >= props.targetCount
-  // 논리 연산자 식
-  // 삼항 연산자 식 (props.count < props.targetCount) ? true : false
-  // 옵셔널 체이닝(?.), null 병합 연산자(??)
+  // 배열의 forEach 메서드(값이 없음) ❌
+  // 배열의 map 메서드(값을 반환) -> React.createElement() 내부에 사용 가능
+  const renderElements = Array.from({ length: 3 }).map((_, index) => {
+    return React.createElement(
+      Output,
+      {
+        key: index,
+        isAnimate: props.count < props.targetCount ? true : false
+      },
+      props.count + index
+    )
+  })
 
-  // createElement() 함수 내부에서는 문을 사용할 수 없다.
-  // 왜? 값이 없으니까! 문 대신, 식을 사용해야 한다.
   return React.createElement(
     'div',
     { className: 'randomCountUpApp' },
     React.createElement(Logo),
-    React.createElement(Output, { isAnimate: props.count < props.targetCount }, props.count),
-    // 재사용
-    // React.createElement(Output, {}, props.count - 8),
-    // React.createElement(Output, {}, props.count + 8),
+    renderElements,
     React.createElement(Shortcut)
   )
 }
