@@ -5,7 +5,7 @@ export default function App(props) {
   const isAnimate = props.count < props.targetCount ? true : false
 
   return (
-    <div className='random-count-up'>
+    <div className="random-count-up">
       <Logo />
       <Output isAnimate={isAnimate}>{props.count}</Output>
       <ShortcutInfo />
