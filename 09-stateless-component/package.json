@@ -1,7 +1,7 @@
 {
   "private": true,
   "type": "module",
-  "name": "react-js-vite",
+  "name": "09-stateless-components",
   "description": "리액트 빌드 환경을 구성합니다.",
   "version": "1.0.0",
   "scripts": {
