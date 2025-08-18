@@ -1,17 +1,24 @@
 import accordionData from './data.json'
 import { Component } from 'react'
 import AccordionItem from './accordion-item'
+import './accordion-list.css'
 
 // 클래스 컴포넌트
-export default class AccordionList extends Component {
+export class AccordionListClass extends Component {
   // 상태 선언
   // 클래스 필드 구문 활용
-  state = {
-    activeIndex: 0,
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      activeIndex: 0,
+    }
+
+    this.handleActiveIndex = this.handleActiveIndex.bind(this)
   }
 
   // 이벤트 핸들러
-  handleActiveIndex = (nextActiveIndex) => {
+  handleActiveIndex(nextActiveIndex) {
     // 상태 업데이트
     this.setState(
       {
@@ -27,7 +34,7 @@ export default class AccordionList extends Component {
     const { activeIndex } = this.state
 
     return (
-      <section>
+      <section className="accordion-section">
         <h2>
           자주 묻는 질문
           <img
@@ -37,7 +44,7 @@ export default class AccordionList extends Component {
             height={43}
           />
         </h2>
-        <dl>
+        <dl className="accordion-list">
           {accordionData.map((accordionItem, index) => (
             <AccordionItem
               key={accordionItem.id}
