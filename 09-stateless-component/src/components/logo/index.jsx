@@ -1,16 +1,16 @@
-import { LOGO_PATH, LOGO_COLOR } from './constant'
+import { LOGO_COLOR, LOGO_PATH } from './constants'
 import './style.css'
 
 /**
- *
+ * Logo 컴포넌트
  * @param {Object} props
  * @param {'primary' | 'secondary'} props.type - 로고 타입
- * @param {boolean} props.outline - 로고 모양
+ * @param {boolean} props.outline - 로고 모양 (fill | outline)
  */
-
 export default function Logo({ type = 'primary', outline = false }) {
-  let path = '',
-    color = ''
+  let path = ''
+  let color = ''
+
   const isPrimary = type === 'primary'
 
   if (isPrimary) {
@@ -18,7 +18,7 @@ export default function Logo({ type = 'primary', outline = false }) {
     color = LOGO_COLOR.PRIMARY
   } else {
     path = !outline ? LOGO_PATH.SECONDARY : LOGO_PATH.SECONDARY_OUTLINE
-    color = LOGO_COLOR.SECONDATY
+    color = LOGO_COLOR.SECONDARY
   }
 
   const colorAttr = { [outline ? 'stroke' : 'fill']: color }
@@ -27,6 +27,7 @@ export default function Logo({ type = 'primary', outline = false }) {
     <figure className="logo">
       <svg width={210} height={57} viewBox="0 0 210 57" fill="none">
         <path d={path} {...colorAttr} />
+
         {/* {React.createElement('path', {
           d: path,
           ...colorAttr,
@@ -35,3 +36,20 @@ export default function Logo({ type = 'primary', outline = false }) {
     </figure>
   )
 }
+
+// --------------------------------------------------------------------------
+// 컴파운드 컴포넌트 패턴
+// --------------------------------------------------------------------------
+// React.Component
+// React.Fragment
+// --------------------------------------------------------------------------
+// Logo.Primary
+// Logo.PrimaryOutline
+// Logo.Secondary
+// Logo.SecondaryOutline
+// --------------------------------------------------------------------------
+
+Logo.Primary = () => <Logo />
+Logo.PrimaryOutline = () => <Logo outline />
+Logo.Secondary = () => <Logo type="secondary" />
+Logo.SecondaryOutline = () => <Logo type="secondary" outline />
