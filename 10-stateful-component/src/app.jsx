@@ -4,17 +4,67 @@ import {
   AccordionList,
   AccordionListClass,
 } from './components/accordion/accordion-list'
+import { Counter, CounterClass } from './components/counter'
 import StatefulComponentClass from './components/stateful-component/class'
 import StatefulComponent from './components/stateful-component/functional'
 import UpdateInput from './components/update-input'
 
 export default function App() {
-  return <FunctionalComponentStateDemo />
+  return <FunctionalComponentObjectTypeStateDemo />
 }
 
 // --------------------------------------------------------------------------
 // 실습 데모
 // --------------------------------------------------------------------------
+
+function FunctionalComponentObjectTypeStateDemo() {
+  const [state, setState] = useState({ name: '하나', age: 1 })
+
+  // [1]
+  console.log(state) // state = { name: '하나', age: 1 }
+  // [2]
+  // console.log(state) // nextState = { ...state, name: 'ㅅ나' }
+  // [3]
+  // console.log(state) // nextState = { name: '세나' }
+
+  return (
+    <LearnSection title="함수형 컴포넌트의 객체 타입 상태 관리">
+      <CounterClass />
+      <Counter />
+
+      <div className="form-group">
+        <label htmlFor="name">이름</label>
+        <input
+          type="text"
+          id="name"
+          value={state.name}
+          onInput={(e) =>
+            setState((currentState) => ({
+              ...currentState,
+              name: e.target.value,
+            }))
+          }
+        />
+      </div>
+
+      <div style={{ marginBlockStart: 30 }}>
+        <button
+          type="button"
+          onClick={() => {
+            const nextState = {
+              ...state,
+              age: state.age + 1,
+            }
+
+            setState(nextState)
+          }}
+        >
+          {state.name} {state.age}
+        </button>
+      </div>
+    </LearnSection>
+  )
+}
 
 const getAge = () => {
   console.time('age state')
@@ -43,7 +93,7 @@ function FunctionalComponentStateDemo() {
 
   // 브라우저 월드
   // DOM 커밋 -> UI에 요소 추가/수정/삭제
-  // 브라우저 렌더링(페인팅) -> 리플로우/리페인팅(성능 이슈)
+  // 브라우저 렌더링(페인팅) -> 리플로우/리페인팅 (성능 이슈)
 
   // --------------------------------------------------------------------------
 
@@ -53,7 +103,7 @@ function FunctionalComponentStateDemo() {
   // 초깃값 설정
   // useState(initialState)
   //
-  // 초기화 함수(initialization)
+  // 초기화 함수 (initialization)
   // useState(() => initialState)
   const [age, setAge] = useState(getAge)
 
