@@ -1,6 +1,7 @@
 body {
-  margin: 0;
+  overflow-y: scroll;
   min-block-size: 100dvh;
+  margin: 0;
 }
 
 abbr[title] {

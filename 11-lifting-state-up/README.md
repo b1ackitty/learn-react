@@ -1,7 +1,7 @@
-# 리액트 빌드 환경
+# 리액트 템플릿 (Bun + Vite)
 
-Bun 올인원 런타임과 Vite를 사용해 리액트를 빌드할 수 있는 환경을 구성합니다.
+Bun 올인원 런타임과 Vite를 사용한 리액트 프로젝트 템플릿
 
 ```sh
-bun create b1ackitty/react-js-vite
+bun create yamoo9/react-js-vite <프로젝트_이름>
 ```
