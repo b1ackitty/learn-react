@@ -1,11 +1,16 @@
 import EmotionFace from './emotion-face'
 import StatusMessage from './status-message'
 
-export default function EmotionFigure() {
+/**
+ * EmotionFigure 컴포넌트
+ * @param {Object} param
+ * @param {Object} param.info - 감정 키와 메시지
+ */
+export default function EmotionFigure({ info }) {
   return (
     <>
-      <EmotionFace />
-      <StatusMessage />
+      <EmotionFace face={info.key} />
+      <StatusMessage>{info.message}</StatusMessage>
     </>
   )
 }
