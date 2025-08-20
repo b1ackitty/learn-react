@@ -1,0 +1,23 @@
+@reference 'tailwindcss';
+
+@layer components {
+  .manage-array-state {
+    @apply max-w-[400px] mx-auto my-16;
+
+    output {
+      @apply block border-2 border-solid py-2 px-3 rounded my-5;
+    }
+
+    [role='group'] {
+      @apply flex flex-col items-start gap-1.5 my-8 mx-0;
+
+      &[data-layout-row] {
+        @apply flex-row;
+      }
+
+      input {
+        @apply w-25;
+      }
+    }
+  }
+}
