@@ -1,11 +1,81 @@
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import { LearnSection } from '@/components'
 import LifeCycleDemo from './components/lifecycle/class'
+import Practice from './components/lifecycle/practice'
 
 export default function App() {
   console.log('App 렌더링')
+  const [isShown, setIsShown] = useState(false)
+  const [email, setEmail] = useState('yamoo9@naver.com')
+  const id = useId()
+  const emailId = `${id}-email`
 
-  return <LifeCycleDemo desc="라이프사이클은 특정단계의 변화를 말합니다." />
+  return (
+    <section className="border-2 bg-indigo-700 text-white p-5">
+      <h1 className="text-xl font-extrabold">App 컴포넌트</h1>
+      <div role="group" className="flex flex-col gap-2 my-3">
+        <label htmlFor={emailId} className="sr-only">
+          이메일
+        </label>
+        <input
+          type="email"
+          name="email"
+          id={emailId}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="input bg-white text-indigo-500"
+          placeholder="user@company.io"
+        />
+        <output className="p-2 px-5 border rounded w-max">{email}</output>
+      </div>
+      <p>
+        Practice 컴포넌트의 상태는 "{isShown ? '마운트' : '언마운트'}"입니다.
+      </p>
+      <label className="block my-2">
+        <input
+          type="checkbox"
+          checked={isShown}
+          onChange={() => setIsShown((is) => !is)}
+        />{' '}
+        Practice {!isShown ? '마운트' : '언마운트'}
+      </label>
+
+      {isShown && <Practice />}
+    </section>
+  )
+}
+
+function LifeCycleDemoApp() {
+  console.log('App 렌더링')
+
+  const [description, setDescription] = useState(
+    '라이프사이클은 특정 단계의 변화를 말합니다.'
+  )
+
+  const [isShown, setIsShown] = useState(false)
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setDescription((d) => d + '⭐️')}
+        className="button m-2"
+      >
+        설명 업데이트
+      </button>
+
+      <label className="m-5">
+        <input
+          type="checkbox"
+          checked={isShown}
+          onChange={() => setIsShown((is) => !is)}
+        />{' '}
+        라이프사이클 데모 {!isShown ? '표시' : '감춤'}
+      </label>
+
+      {isShown && <LifeCycleDemo desc={description} />}
+    </>
+  )
 }
 
 /* -------------------------------------------------------------------------- */
