@@ -7,10 +7,41 @@ import { LearnSection } from '@/components'
 
 export default function App() {
   // 리액트 렌더링 프로세스 구간: 시작
-  const [message, setMessage] = useState('컴포넌트의 부수 효과 관리')
 
-  // 리액트 컴포넌트의 부수 효과 관리를 위한 특별한 훅 함수
+  // 리액트 반응성 상태 변경에 따른 이펙트 함수 실행(조건 처리) -----------
+
+  // 첫 번째 상태 [message] 관심사의 분리: 시작 ------------------------
+
+  const [message, setMessage] = useState('컴포넌트의 부수 효과 관리')
+  // 첫 번째 상태가 변경될 때마다 콜백되는 이펙트 함수
+  useEffect(() => {
+    console.log(`업데이트 된 message = ${message}`)
+  }, [message])
+
+  // 첫 번째 상태 [message] 관심사의 분리: 종료 ------------------------
+
+  // 두 번째 상태 [year] 관심사의 분리: 시작 ---------------------------
+
+  const [year, setYear] = useState(2025)
+  // 두 번째 상태가 변경될 때마다 콜백되는 이펙트 함수
+  useEffect(() => {
+    // console.log(`업데이트 된 message = ${year}`)
+    document.title = `HELLO REACT! (${year})`
+  }, [year])
+
+  // 두 번째 상태 [year] 관심사의 분리: 종료 ---------------------------
+
+  // 여러 상태 변경에 관심을 둔 이펙트 함수: 시작 ------------------------
+
+  useEffect(() => {
+    console.log(`year = ${year} / message = ${message}`)
+  }, [year, message])
+
+  // 여러 상태 변경에 관심을 둔 이펙트 함수: 종료 ------------------------
+
+  // 마운트 이후, 1회 실행 --------------------------------------------
   useEffect(
+    // 리액트 컴포넌트의 부수 효과 관리를 위한 특별한 훅 함수
     // 이펙트 콜백(함수): 필수
     // - 부수 효과 처리
     // - 리액트 컴포넌트 렌더링과 분리된 별도의 공간
@@ -19,12 +50,11 @@ export default function App() {
       // 왜냐하면 여기는 이펙트 함수 내부니까요!
       // - componentDidMount (*): 처음 마운트 이후 1회 실행(서버에 데이터 가져오기)
       // - componentDidUpdate (*): 컴포넌트가 다시 실행될 때마다 n회 실행
-      console.log('컴포넌트 마운트 이후 실행 및 리렌더링 될 때마다 실행')
+      // console.log('컴포넌트 마운트 이후 실행')
       // console.log(
       //   '함수 컴포넌트의 이펙트 함수 내부 영역:',
       //   document.querySelector('[data-target]')
       // )
-
       // - componentWillUnmount
     },
     // 종속성(의존성) 목록 추가
@@ -38,17 +68,65 @@ export default function App() {
   //   document.querySelector('[data-target]')
   // )
 
+  const [toggle, setToggle] = useState(false)
+
   return (
     <LearnSection title="이팩트 관리 훅" showTitle>
-      <p data-target>{message}</p>
+      <p data-target>
+        {year}년도 핵심! {message}
+      </p>
+      <button
+        type="button"
+        className="button mt-4"
+        onClick={() => setToggle((t) => !t)}
+      >
+        컨트롤 토글
+      </button>
+      {toggle && <YearControl year={year} setYear={setYear} />}
       <button
         type="button"
         className="button mt-4"
         onClick={() => setMessage((m) => m + '😎')}
       >
-        설명 업데이트
+        설명 업데이트 ({year})
       </button>
     </LearnSection>
   )
   // 리액트 렌더링 프로세스 구간: 끝
+}
+
+function YearControl({ year, setYear }) {
+  // year 속성(반응성 데이터)이 변경될 때마다 실행되는 이펙트 추가
+  useEffect(() => {
+    console.log(`변경된 년도 값 = ${year}`)
+
+    // 타이머 설정
+    // 상위 컴포넌트에서 전달한 속성(반응성 데이터)
+    // setInterval이 정리되지 않고, 연속된 형태로 타이머 설정되기 때문이다.
+    const clearId = setInterval(() => {
+      console.log(new Date().toLocaleTimeString())
+    }, 1000)
+
+    // 클린업 함수(설정 함수가 선택적으로 반환하는 함수)
+    return () => {
+      // 설정한 타이머 해제
+      clearInterval(clearId)
+    }
+  }, [year])
+
+  return (
+    <div role="group" className="mt-3">
+      <label htmlFor="year" className="sr-only">
+        년도
+      </label>
+      <input
+        type="number"
+        value={year}
+        onChange={(e) => setYear(Number(e.target.value))}
+        name="year"
+        id="year"
+        className="input"
+      />
+    </div>
+  )
 }
