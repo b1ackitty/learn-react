@@ -1,5 +1,6 @@
 import { useEffect, useId, useState } from 'react'
 import axios from 'axios'
+import { useImmer } from 'use-immer'
 import { LearnSection } from '@/components'
 import { wait } from './utils'
 
@@ -12,14 +13,32 @@ export default function App() {
 
   const albumInputId = useId()
   const [albumId, setAlbumId] = useState(1)
-
   const isAlbumInputDisabled = albumId === 1 || albumId === 100
+
+  const postInputId = useId()
+  const [postId, setPostId] = useImmer(1)
 
   return (
     <LearnSection title="데이터 가져오기(Fetching Data)" showTitle>
       <div role="group" className="my-5">
+        <label htmlFor={postInputId} className="mr-2">
+          포스트 ID
+        </label>
+        <input
+          type="number"
+          className="input disabled:cursor-not-allowed"
+          id={postInputId}
+          value={postId}
+          onChange={(e) => {
+            setPostId(Number(e.target.value))
+          }}
+          min={1}
+          max={24}
+        />
+      </div>
+      <div role="group" className="my-5 hidden">
         <label htmlFor={albumInputId} className="mr-2">
-          앨범 ID
+          포스트 ID
         </label>
         <input
           type="number"
@@ -35,7 +54,7 @@ export default function App() {
           max={100}
         />
       </div>
-      <div role="group" className="mt-5">
+      <div role="group" className="mt-5 hidden">
         <button
           type="button"
           className="button"
@@ -46,7 +65,7 @@ export default function App() {
         <output>렌더링 키: {key}</output>
       </div>
 
-      <AlbumAxiosDemo id={albumId} />
+      <FetchingPostListDataDemo postId={postId} />
     </LearnSection>
   )
 }
@@ -55,6 +74,97 @@ export default function App() {
 // Album 컴포넌트
 
 const ALBUM_API_URL = 'https://jsonplaceholder.typicode.com/albums'
+
+// -------------------------------------------------------------------
+// 로컬 서버(JSON Server) 활용 데이터 가져오기 데모
+function FetchingPostListDataDemo({ postId }) {
+  // 데이터 가져오기에 필요한 상태 정의(pending, error, post)
+  const [state, setState] = useImmer({
+    pending: false,
+    error: null,
+    post: null, // null | Post
+  })
+
+  // 부수 효과(서버에서 데이터 가져오기)
+  useEffect(() => {
+    // 한 번만 사용하는 비동기 함수 작성
+    // try ... catch
+    // fetch
+
+    const controller = new AbortController()
+    const url = `http://localhost:4000/posts/${postId}`
+    const options = { signal: controller.signal }
+
+    ;(async () => {
+      setState((draft) => {
+        draft.pending = true
+        draft.error = null
+      })
+
+      try {
+        await wait(0.765)
+
+        const response = await fetch(url, options)
+
+        if (!response.ok && response.status === 404) {
+          throw new Error(
+            `요청된 포스트 ${postId}는 존재하지 않는 리소스입니다.`
+          )
+        }
+
+        const responseData = await response.json()
+        setState((draft) => {
+          draft.post = responseData
+          draft.pending = false
+        })
+      } catch (error) {
+        if (error.name === 'AbortError') return
+
+        setState((draft) => {
+          draft.error = error
+          draft.pending = false
+        })
+      }
+    })()
+
+    return () => {
+      controller.abort()
+    }
+  }, [postId, setState])
+
+  if (state.pending) {
+    return (
+      <div
+        role="status"
+        aria-live="polite"
+        className="text-slate-400 text-xl font-extrabold"
+      >
+        포스트 "{postId}" 로딩 중...
+      </div>
+    )
+  }
+
+  if (state.error) {
+    return (
+      <div
+        role="alert"
+        aria-live="assertive"
+        className="text-red-600 text-xl font-extrabold"
+      >
+        {state.error.name.toUpperCase()} {state.error.message}
+      </div>
+    )
+  }
+
+  return (
+    <article className="flex flex-col gap-2">
+      <h2 className="text-3xl font-semibold text-indigo-800">
+        {state.post?.title}
+      </h2>
+      <p className="text-sm font-medium text-indigo-700">{state.post?.body}</p>
+    </article>
+  )
+}
 
 // -------------------------------------------------------------------
 // Axios 라이브러리 활용 데모
