@@ -1,13 +1,94 @@
 import { useState } from 'react'
 import { useImmer } from 'use-immer'
 
-export default function SimpleTodoList() {
-  const [doit, newDoit] = useState('')
-  const handleChange = (e) => newDoit(e.target.value)
+// -------------------------------------------------------------------------------------------
+// ✅ 구현 요구 사항
+// -------------------------------------------------------------------------------------------
+// [ ] 하나의 App 파일에서 아래 요구사항을 모두 구현해 보세요.
+// [ ] 인풋에 할 일을 입력하고, 추가 버튼을 클릭하면 할 일이 목록에 추가되어야 합니다.
+// [ ] 각 할 일마다 체크박스(또는 레이블)을 클릭하면 해당 할 일이 완료된 것으로 표시되어야 합니다.
+// [ ] 각 할 일 옆에 삭제 버튼을 만들어, 삭제 버튼을 클릭하면 해당 할 일이 목록에서 삭제되어야 합니다.
+// -------------------------------------------------------------------------------------------
 
-  const [list] = useImmer([
+export default function SimpleTodoList() {
+  // 새로운 할 일 상태 관리
+  const [doit, setDoit] = useState('')
+  const handleChange = (e) => setDoit(e.target.value)
+
+  // 할 일 목록 관리
+  const [todoList, setTodoList] = useImmer([
     { id: crypto.randomUUID(), doit: '보육원에 가서 점심 사주기', done: false },
   ])
+
+  // 할 일 추가
+  const handleSubmit = (e) => {
+    e.preventDefault()
+
+    // 사용자 입력 값 검증
+    if (doit.trim().length === 0) {
+      console.warn('새로운 할 일을 입력해야 합니다.')
+      return
+    }
+
+    // 새 할 일 정의
+    const newTodo = {
+      id: crypto.randomUUID(),
+      doit,
+      done: false,
+    }
+
+    // 새 할 일을 할 일 목록의 맨 앞에 추가
+
+    // Immer 라이브러리 사용법
+    // setTodoList((draft) => {
+    //   draft.unshift(newTodo)
+    // })
+
+    // useState 상태 업데이트와 동일한 방법
+    setTodoList([newTodo, ...todoList])
+
+    // 새로운 할 일 상태 초기화
+    setDoit('')
+  }
+
+  // 할 일 수정
+  const handleUpdateTodo = (id) => {
+    // 리액트의 방식(불변성 유지)
+    // setTodoList(
+    //   todoList.map((todo) => {
+    //     if (todo.id === id) {
+    //       return { ...todo, done: !todo.done }
+    //     }
+
+    //     return todo
+    //   })
+    // )
+
+    // 자바스크립트의 방식(변형 방식 적용)
+    setTodoList((draft) => {
+      const editTodo = draft.find((item) => item.id === id)
+      editTodo.done = !editTodo.done
+      return draft
+    })
+  }
+
+  // 할 일 삭제
+  const handleDeleteTodo = (id) => {
+    // 리액트의 방식(불변성 유지)
+    // setTodoList(todoList.filter((todo) => todo.id !== id))
+
+    // 자바스크립트의 방식(불변 허용)
+    // 배열의 특정 인덱스 순서의 원소를 삭제하려면
+    // findIndex, splice
+    setTodoList((draft) => {
+      const deleteIndex = draft.findIndex((item) => item.id === id)
+      if (deleteIndex > -1) draft.splice(deleteIndex, 1)
+    })
+  }
+
+  // 파생된 상태 설정
+  // 할 일 목록을 역순으로 정렬
+  const reversedTodoList = todoList.toReversed()
 
   return (
     <div className="container">
@@ -23,7 +104,7 @@ export default function SimpleTodoList() {
               onChange={handleChange}
             />
           </div>
-          <button className="button" type="submit">
+          <button className="button" type="submit" onClick={handleSubmit}>
             추가
           </button>
         </form>
@@ -31,15 +112,23 @@ export default function SimpleTodoList() {
       <section>
         <h2 className="sr-only">할 일 목록</h2>
         <ul className="todo-list">
-          {list.map(({ id, doit, done }) => {
+          {todoList.map(({ id, doit, done }) => {
             return (
               <li key={id} className="list-item">
                 <div className="form-control row">
-                  <input id="todo-item-cisdk" type="checkbox" checked={done} />
+                  <input
+                    id="todo-item-cisdk"
+                    type="checkbox"
+                    checked={done}
+                    onChange={handleUpdateTodo.bind(null, id)}
+                  />
                   <label htmlFor="todo-item-cisdk" className="list-item-label">
                     {doit}
                   </label>
                 </div>
+                <button type="button" onClick={handleDeleteTodo.bind(null, id)}>
+                  삭제
+                </button>
               </li>
             )
           })}
