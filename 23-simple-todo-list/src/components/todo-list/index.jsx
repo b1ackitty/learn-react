@@ -4,10 +4,10 @@ import { useImmer } from 'use-immer'
 // -------------------------------------------------------------------------------------------
 // ✅ 구현 요구 사항
 // -------------------------------------------------------------------------------------------
-// [ ] 하나의 App 파일에서 아래 요구사항을 모두 구현해 보세요.
-// [ ] 인풋에 할 일을 입력하고, 추가 버튼을 클릭하면 할 일이 목록에 추가되어야 합니다.
-// [ ] 각 할 일마다 체크박스(또는 레이블)을 클릭하면 해당 할 일이 완료된 것으로 표시되어야 합니다.
-// [ ] 각 할 일 옆에 삭제 버튼을 만들어, 삭제 버튼을 클릭하면 해당 할 일이 목록에서 삭제되어야 합니다.
+// - [x] 하나의 App 파일에서 아래 요구사항을 모두 구현해 보세요.
+// - [x] 인풋에 할 일을 입력하고, 추가 버튼을 클릭하면 할 일이 목록에 추가되어야 합니다.
+// - [x] 각 할 일마다 체크박스(또는 레이블)을 클릭하면 해당 할 일이 완료된 것으로 표시되어야 합니다.
+// - [x] 각 할 일 옆에 삭제 버튼을 만들어, 삭제 버튼을 클릭하면 해당 할 일이 목록에서 삭제되어야 합니다.
 // -------------------------------------------------------------------------------------------
 
 export default function SimpleTodoList() {
@@ -41,11 +41,11 @@ export default function SimpleTodoList() {
 
     // Immer 라이브러리 사용법
     // setTodoList((draft) => {
-    //   draft.unshift(newTodo)
+    //   draft.push(newTodo)
     // })
 
     // useState 상태 업데이트와 동일한 방법
-    setTodoList([newTodo, ...todoList])
+    setTodoList([...todoList, newTodo])
 
     // 새로운 할 일 상태 초기화
     setDoit('')
@@ -112,7 +112,7 @@ export default function SimpleTodoList() {
       <section>
         <h2 className="sr-only">할 일 목록</h2>
         <ul className="todo-list">
-          {todoList.map(({ id, doit, done }) => {
+          {reversedTodoList.map(({ id, doit, done }) => {
             return (
               <li key={id} className="list-item">
                 <div className="form-control row">
@@ -126,7 +126,13 @@ export default function SimpleTodoList() {
                     {doit}
                   </label>
                 </div>
-                <button type="button" onClick={handleDeleteTodo.bind(null, id)}>
+                <button
+                  type="button"
+                  // onClick={() => handleDeleteTodo(id)}
+                  onClick={handleDeleteTodo.bind(null, id)}
+                  // onClick={handleDeleteTodo.call(null, id)}
+                  // onClick={handleDeleteTodo(id)}
+                >
                   삭제
                 </button>
               </li>
