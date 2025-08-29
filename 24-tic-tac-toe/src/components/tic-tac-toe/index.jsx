@@ -1,5 +1,11 @@
 import { useState } from 'react'
-import { GRID, INITIAL_SQUARES, PLAYER, getPlayerName } from './constants'
+import {
+  GRID,
+  INITIAL_SQUARES,
+  PLAYER,
+  checkWinner,
+  getPlayerName,
+} from './constants'
 import './style.css'
 
 export default function TicTacToe() {
@@ -41,12 +47,18 @@ function SquaresGrid() {
   // (React: derived state / Vue: computed property)
   const nextPlayer = gameIndex % 2 === 0 ? PLAYER.ONE : PLAYER.TWO
 
+  // 게임이 진행될 때(턴이 변경될 때)마다 게임의 승자(winner)가 있는지 확인
+  const winner = checkWinner(squares)
+  console.log(winner)
+
   // 부수 효과
   // - 이벤트 핸들러(handler)
   // - 이펙트 훅(useEffect)
   const playGame = (squareIndex, e) => {
     // 접근성 준수를 위해 필요(리액트의 렌더링과 무관한 부수 효과)
-    if (e.target.getAttribute('aria-disabled') === 'true') return
+    if (e.target.getAttribute('aria-disabled') === 'true') {
+      return alert('이미 게임이 진행된 칸입니다. 다른 빈 칸에 말을 놓으세요.')
+    }
 
     // 게임 인덱스 상태 업데이트
     const nextGameIndex = gameIndex + 1
