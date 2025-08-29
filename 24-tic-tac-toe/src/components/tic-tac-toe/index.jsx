@@ -60,7 +60,14 @@ export default function TicTacToe() {
       index === squareIndex ? nextPlayer : square
     )
 
-    const nextGameHistory = [...gameHistory, nextSquares]
+    // 시간을 되돌린 상태에서 새 게임을 진행할 때
+    // 현재 게임의 기록에서 되돌려진 게임 인덱스의 다음 인덱스를 기준으로
+    // 현재 게임 기록을 정리한 후, 새로운 다음 게임판을 추가하는 방법으로 업데이트
+    // x.slice(0, nextGameIndex)
+    const nextGameHistory = [
+      ...gameHistory.slice(0, nextGameIndex),
+      nextSquares,
+    ]
     setGameHistory(nextGameHistory)
   }
 
