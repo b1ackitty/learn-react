@@ -64,6 +64,17 @@ export default function TicTacToe() {
     setGameHistory(nextGameHistory)
   }
 
+  // 게임 재시작 기능(함수)
+  const restartGame = () => {
+    setGameHistory([INITIAL_SQUARES])
+    setGameIndex(0)
+  }
+
+  // 시간 여행 기능(커링 함수)
+  const makeTimeTravel = (travelIndex) => () => {
+    setGameIndex(travelIndex)
+  }
+
   // 상태 메시지
   // - 다음 플레이어 [ ]
   // - 게임 위너!! [ ]
@@ -80,8 +91,66 @@ export default function TicTacToe() {
         squares={squares}
         playGame={playGame}
       />
-      <History />
+      <History
+        items={gameHistory}
+        gameIndex={gameIndex}
+        onRestart={restartGame}
+        makeTimeTravel={makeTimeTravel}
+      />
     </div>
+  )
+}
+
+// --------------------------------------------------------------------------
+
+function History({ items, gameIndex, onRestart, makeTimeTravel }) {
+  return (
+    <div className="History">
+      <ol className="HistoryList">
+        {items.map((item, index) => (
+          <HistoryItem
+            key={index}
+            index={index}
+            isFirst={index === 0}
+            selectedIndex={gameIndex === index}
+            onRestart={onRestart}
+            onTimeTravel={makeTimeTravel(index)}
+          />
+        ))}
+      </ol>
+    </div>
+  )
+}
+
+function HistoryItem({
+  index,
+  isFirst,
+  selectedIndex: isDisabled,
+  onRestart,
+  onTimeTravel,
+}) {
+  // 타임 트레블(시간 여행) 버튼의 레이블
+  const label = isFirst
+    ? '게임 시작!'
+    : `게임 #${index < 10 ? `0${index}` : index}`
+
+  const arialabel = isFirst ? null : `${label} 이동`
+
+  // 조건에 따라 연결될 이벤트 핸들러(리스너)
+  const handler = isFirst ? onRestart : onTimeTravel
+
+  return (
+    <li className="HistoryListItem">
+      <button
+        type="button"
+        className="HistoryButton"
+        aria-label={arialabel}
+        disabled={isDisabled}
+        onClick={handler}
+      >
+        {label}
+      </button>
+    </li>
   )
 }
 
@@ -200,40 +269,5 @@ function SquareGridCell({ isWinnerPattern, children, index, onPlay }) {
     >
       {children}
     </button>
-  )
-}
-
-// --------------------------------------------------------------------------
-
-function History() {
-  return (
-    <div className="History">
-      <ol className="HistoryList">
-        <li className="HistoryListItem">
-          <button type="button" className="HistoryButton">
-            게임 시작!
-          </button>
-        </li>
-        <li className="HistoryListItem">
-          <button
-            type="button"
-            className="HistoryButton"
-            aria-label="게임 #1 이동"
-          >
-            게임 #1
-          </button>
-        </li>
-        <li className="HistoryListItem">
-          <button
-            type="button"
-            className="HistoryButton"
-            aria-label="게임 #2 이동"
-            disabled
-          >
-            게임 #2
-          </button>
-        </li>
-      </ol>
-    </div>
   )
 }
