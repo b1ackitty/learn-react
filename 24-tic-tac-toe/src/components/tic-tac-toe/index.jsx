@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { tw } from '@/utils'
 import {
   GRID,
   INITIAL_SQUARES,
@@ -36,8 +37,7 @@ function Board() {
   // 진행 중인 게임에 위너가 없고 게임이 무승부로 끝났을 때
   // 이런 의미의 파생된 상태를 정의
   // 게임이 비긴 상황 = 위너가 없고, 게임 보드판에 빈 칸이 없다
-  const isDraw =
-    !winner && squares.filter(Boolean).length === GRID.COLS * GRID.ROWS
+  const isDraw = !winner && gameIndex === GRID.COLS * GRID.ROWS
 
   // 부수 효과
   // - 이벤트 핸들러(handler)
@@ -79,7 +79,7 @@ function Board() {
   return (
     <div className="Board">
       <Status>{statusMessage}</Status>
-      <SquaresGrid squares={squares} onPlay={playGame} />
+      <SquaresGrid winner={winner} squares={squares} onPlay={playGame} />
     </div>
   )
 }
@@ -92,7 +92,7 @@ function Status({ children }) {
   )
 }
 
-function SquaresGrid({ squares, onPlay }) {
+function SquaresGrid({ winner, squares, onPlay }) {
   const handleKeyControls = (e) => {
     const { target, key } = e
     // 사용자가 기본적으로 탐색하는 데 사용하는
@@ -145,8 +145,14 @@ function SquaresGrid({ squares, onPlay }) {
       aria-colcount={GRID.COLS}
     >
       {squares.map((square, index) => {
+        const isWinnerPattern = winner?.pattern?.includes(index)
         return (
-          <SquareGridCell key={index} index={index} onPlay={onPlay}>
+          <SquareGridCell
+            isWinnerPattern={isWinnerPattern}
+            key={index}
+            index={index}
+            onPlay={onPlay}
+          >
             {square}
           </SquareGridCell>
         )
@@ -155,7 +161,7 @@ function SquaresGrid({ squares, onPlay }) {
   )
 }
 
-function SquareGridCell({ children, index, onPlay }) {
+function SquareGridCell({ isWinnerPattern, children, index, onPlay }) {
   // 이 칸이 이미 선택된 경우, 비활성 상태 (null이 아닌 경우)
   const isDisabled = !!children
   // 현재 칸의 플레이어 이름 ('플레이어 1 | 2' 또는 '비어 있음')
@@ -173,7 +179,7 @@ function SquareGridCell({ children, index, onPlay }) {
   return (
     <button
       role="gridcell"
-      className="Square"
+      className={tw('Square', isWinnerPattern && 'bg-yellow-200!')}
       onClick={handlePlay}
       aria-disabled={isDisabled}
       aria-rowindex={rowIndex}
