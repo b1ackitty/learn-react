@@ -1,6 +1,5 @@
 import { Component, useRef, useState } from 'react'
 import { LearnSection } from '@/components'
-import RandomCountUp from '@/demo/app'
 
 export default function App() {
   return (
@@ -8,10 +7,57 @@ export default function App() {
       title="클래스 vs. 함수 값 참조"
       className="bg-slate-950 h-screen flex flex-col gap-4"
     >
-      <MemoPrevStateValue />
+      <TimerDemo />
+      {/* <MemoPrevStateValue /> */}
       {/* <FunctionalComponent /> */}
       {/* <ClassComponent /> */}
     </LearnSection>
+  )
+}
+
+// --------------------------------------------------------------------------
+
+// 타이머 추가/제거 (타이머 추가 및 제거하기 위한 타이머 ID 기억)
+// 다음 번에 렌더링 되더라도 값을 기억해야 타이머를 제거할 수 있음
+
+function TimerDemo() {
+  const [timer, setTimer] = useState(null)
+  const timerIdRef = useRef() // { current: 3 }
+
+  const handleStartTimer = () => {
+    ;(function recursion() {
+      clearTimeout(timerIdRef.current)
+      timerIdRef.current = setTimeout(() => {
+        console.log('타이머 작동 중...')
+        setTimer(new Date())
+        recursion()
+      }, 1000)
+    })()
+  }
+
+  const handleStopTimer = () => {
+    console.log('타이머 중지!')
+    clearTimeout(timerIdRef.current)
+    setTimer(null)
+  }
+
+  return (
+    <section
+      aria-label="타이머 데모"
+      className="bg-white text-black p-20 text-2xl flex flex-col gap-10"
+    >
+      <div role="group" className="space-y-3">
+        <button type="button" className="button" onClick={handleStartTimer}>
+          타이머 시작
+        </button>
+        <button type="button" className="button" onClick={handleStopTimer}>
+          타이머 중지
+        </button>
+      </div>
+      {timer && (
+        <time dateTime={timer.toISOString()}>{timer.toLocaleTimeString()}</time>
+      )}
+    </section>
   )
 }
 
