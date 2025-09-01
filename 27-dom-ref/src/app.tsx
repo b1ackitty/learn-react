@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import confetti from 'canvas-confetti'
+import gsap from 'gsap'
 import VanillaTilt, { type HTMLVanillaTiltElement } from 'vanilla-tilt'
 import { LearnSection } from '@/components'
 
@@ -15,8 +16,67 @@ export default function App() {
       >
         {visible ? '박스 감춤' : '박스 표시'}
       </button>
-      {visible && <VanillaTiltEffectDemo />}
+      {visible && <GsapDemoRefCallback />}
     </LearnSection>
+  )
+}
+
+// --------------------------------------------------------------------------
+// GSAP
+
+function GsapDemoRefCallback() {
+  return (
+    <div
+      ref={(element) => {
+        if (element) {
+          const timeline = gsap.timeline({
+            repeat: -1,
+            defaults: { duration: 1.2, ease: 'power2.inOut' },
+          })
+
+          timeline
+            .to(element, { x: window.innerWidth - 180 - 20 })
+            .to(element, { y: window.innerHeight - 60 - 20 })
+            .to(element, { x: 0 })
+            .to(element, { y: 0 })
+        }
+      }}
+    >
+      <abbr title="Green Sock Animation Platform" className="text-5xl">
+        GSAP
+      </abbr>
+    </div>
+  )
+}
+
+function GsapDemo() {
+  const gsapRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const element = gsapRef.current
+
+    if (element) {
+      const timeline = gsap.timeline({
+        repeat: -1,
+        defaults: { duration: 1.2, ease: 'power2.inOut' },
+      })
+
+      timeline
+        .to(element, { x: window.innerWidth - 180 - 20 })
+        .to(element, { y: window.innerHeight - 60 - 20 })
+        .to(element, { x: 0 })
+        .to(element, { y: 0 })
+    }
+
+    return () => {}
+  })
+
+  return (
+    <div ref={gsapRef}>
+      <abbr title="Green Sock Animation Platform" className="text-5xl">
+        GSAP
+      </abbr>
+    </div>
   )
 }
 
