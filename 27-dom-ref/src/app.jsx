@@ -1,25 +1,20 @@
 import { useEffect, useRef, useState } from 'react'
 import { LearnSection } from '@/components'
-
-// import Demo from './components/demo'
+import SearchQueryDemo from './components/search-posts'
 
 export default function App() {
+  return (
+    <LearnSection title="브라우저 API를 사용한 검색 데모">
+      <SearchQueryDemo />
+    </LearnSection>
+  )
+}
+
+// --------------------------------------------------------------------------
+
+function DOMRefDemo() {
   const [attach, setAttach] = useState(true)
 
-  // 1. ref callback demo
-  const refCallback = (el) => {
-    el?.setAttribute('tabindex', '-1')
-    el?.focus()
-    const intervalId = setInterval(() => {
-      console.log(new Date().toLocaleTimeString())
-    }, 1000)
-
-    return () => {
-      clearInterval(intervalId)
-    }
-  }
-
-  // 2. useRef + useCallback
   const pRef = useRef(null)
   const intervalRef = useRef()
 
@@ -40,68 +35,29 @@ export default function App() {
 
   return (
     <LearnSection title="DOM 참조">
-      <Demo />
-
-      <div className="paragraphes">
+      <div className="paragraphes space-y-2 [&_p]:text-gray-700 [&_p]:font-semibold">
         {attach && (
-          // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
-          <p
-            onClick={() => {
-              setAttach((a) => !a)
-              clearInterval(intervalRef.current)
-            }}
-            // 1. ref callback demo
-            // ref={refCallback}
-            // 2. useRef + useEffect demo
-            ref={pRef}
-            className="focus:outline-8 outline-offset-2 outline-blue-500/40"
-          >
-            one
-          </p>
+          <div className="bg-amber-300 p-5 pt-2.5 my-2">
+            <p
+              ref={pRef}
+              className="focus:outline-16 outline-offset-4 outline-blue-500/40"
+            >
+              하나
+            </p>
+            <button
+              className="button mt-2"
+              onClick={() => {
+                setAttach((a) => !a)
+                clearInterval(intervalRef.current)
+              }}
+            >
+              토글
+            </button>
+          </div>
         )}
-        <p>two</p>
-        <p>thtree</p>
+        <p>둘</p>
+        <p>셋</p>
       </div>
     </LearnSection>
-  )
-}
-
-function Demo() {
-  useEffect(() => {
-    const pElements = document.querySelectorAll('.paragraphes')
-    console.log(pElements)
-  }, [])
-
-  // useRef 훅의 쓰임새
-  // 1. 값 참조로서 useRef 활용
-  // 2. 컴포넌트 렌더링에 따른 실제 DOM 참조 접근/조작 (접근성 필수!!!)
-
-  // 리액트 엘리먼트가 렌더링된 이후 DOM 요소 참조
-  const articleRef = useRef(null)
-  const divRef = useRef(null)
-
-  useEffect(() => {
-    console.log(articleRef.current) // 실제 DOM 요소인 <article>
-    console.log(divRef.current) // 실제 DOM 요소인 <div>
-  }, [])
-
-  return (
-    <article ref={articleRef}>
-      <h2>아티클</h2>
-      <div ref={divRef} className="paragraphes">
-        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Enim?</p>
-        <p>
-          Quaerat iusto optio quae accusantium autem! Impedit, possimus soluta!
-        </p>
-        <p>
-          Voluptate exercitationem sint magnam repellendus illo quos aliquam
-          recusandae.
-        </p>
-        <p>
-          Sapiente voluptatum consectetur porro, atque quos doloribus.
-          Laudantium, placeat.
-        </p>
-      </div>
-    </article>
   )
 }
