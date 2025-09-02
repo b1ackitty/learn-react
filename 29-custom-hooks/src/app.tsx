@@ -1,9 +1,117 @@
 import { useCallback, useState } from 'react'
 import { LearnSection } from '@/components'
-import { useArray, useInput, useToggleState } from '@/hooks'
-import { tw } from '@/utils'
+import { useArray, useInput, useQuery, useToggleState } from '@/hooks'
+import { tw } from './utils'
+
+const URL = {
+  users: 'http://localhost:4000/users',
+  posts: 'http://localhost:4000/posts',
+  comments: 'http://localhost:4000/comments',
+}
 
 export default function App() {
+  const [selectedUrl, setSelectedUrl] = useState<string>(URL.users)
+  const queryData = useQuery(selectedUrl)
+
+  return (
+    <main className="p-8 max-w-2xl mx-auto">
+      <h1 className="text-2xl font-bold mb-6">useQuery 테스트</h1>
+      <section className="mb-6">
+        <h2 className="font-semibold mr-4">API 선택:</h2>
+        <div
+          role="group"
+          aria-label="API 엔드포인트 선택"
+          className="inline-flex gap-2"
+        >
+          {Object.entries(URL).map(([key, url]) => {
+            const isSelected = selectedUrl === url
+            const classNames = tw(
+              'px-3 py-1 rounded border text-sm font-medium transition-colors',
+              isSelected &&
+                'bg-gray-200 border-gray-400 text-gray-500 cursor-not-allowed',
+              isSelected ||
+                'bg-white border-gray-300 hover:bg-blue-50 focus:bg-blue-100 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400'
+            )
+            return (
+              <button
+                key={key}
+                type="button"
+                onClick={() => setSelectedUrl(url)}
+                aria-pressed={selectedUrl === url}
+                aria-label={`${key} 데이터 불러오기`}
+                disabled={selectedUrl === url}
+                className={classNames}
+              >
+                {key}
+              </button>
+            )
+          })}
+        </div>
+        <button
+          type="button"
+          onClick={queryData.refetch}
+          aria-label="데이터 다시 불러오기"
+          className="ml-6 px-3 py-1 rounded border border-blue-500 bg-blue-50 text-blue-700 font-semibold text-sm hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors"
+        >
+          리페치
+        </button>
+      </section>
+
+      <section aria-live="polite" className="mb-6">
+        <div className="flex items-center gap-2">
+          <span className="font-semibold">상태:</span>
+          <span className="text-gray-700">{status}</span>
+          {queryData.isLoading && (
+            <span className="ml-2 animate-pulse text-blue-500">로딩중...</span>
+          )}
+        </div>
+        {queryData.hasError && (
+          <div className="mt-2 text-red-600" role="alert">
+            <span className="font-semibold">에러:</span>{' '}
+            {(queryData.error as unknown as Error)?.message}
+          </div>
+        )}
+      </section>
+
+      <section>
+        <span className="font-semibold">데이터:</span>
+        <pre className="bg-gray-100 p-3 rounded text-xs mt-2 max-h-72 overflow-auto">
+          {JSON.stringify(queryData.data, null, 2)}
+        </pre>
+      </section>
+
+      <hr />
+
+      <FetchPostDataDemo />
+    </main>
+  )
+}
+
+interface Post {
+  userId: number
+  id: number
+  title: string
+  body: string
+}
+
+function FetchPostDataDemo() {
+  const { isLoading, hasError, error, data } = useQuery<Post[]>(URL.posts)
+
+  if (isLoading) {
+    return <div role="status">포스트 데이터 로딩 중...</div>
+  }
+
+  if (hasError) {
+    return <div role="alert">{error?.message}</div>
+  }
+
+  return <output>{data?.length ?? 0}</output>
+}
+
+// --------------------------------------------------------------------------
+// useArray 훅 데모
+
+function UseArrayDemo() {
   const arrayData = useArray<number>([3, 6, 9])
 
   return (
@@ -45,16 +153,16 @@ export default function App() {
 // --------------------------------------------------------------------------
 
 function UsingCustomHooksDemo() {
-  const inputProps = useInput<number>(0)
+  const inputProps = useInput<number>(99)
 
-  const [darkTheme, toggleDarkTheme] = useToggleState(false)
+  const [darkTheme, toggleDarkTheme] = useToggleState(true)
 
   const themeClassNames = darkTheme ? 'bg-slate-950 text-white' : ''
-  const checkboxLabel = darkTheme ? '라이트 테마 전환' : '타크 테마 전환'
+  const checkeboxLabel = darkTheme ? '라이트 테마 전환' : '다크 테마 전환'
 
   return (
     <LearnSection
-      title="사용자 정의 훅(Custom Hooks)"
+      title="사용자 정의 훅 (Custom Hooks)"
       showTitle
       className={tw('p-10 h-screen', themeClassNames)}
     >
@@ -66,7 +174,7 @@ function UsingCustomHooksDemo() {
           onChange={toggleDarkTheme}
         />
         <label htmlFor="theme-checkbox" className="select-none">
-          {checkboxLabel}
+          {checkeboxLabel}
         </label>
       </div>
       <div role="group" className="flex flex-col gap-2 my-4">
@@ -87,7 +195,7 @@ function UsingCustomHooksDemo() {
 }
 
 function CustomHookDemo() {
-  const inputProps = useInput<string>('로직 재사용')
+  const inputProps = useInput<string>('reusable logic')
 
   const [toggle, setToggle] = useToggleState(true)
   const language = toggle ? 'ko' : 'en'
@@ -97,7 +205,7 @@ function CustomHookDemo() {
     <>
       <div role="group" className="flex flex-col gap-2 my-4">
         <label htmlFor="user-input">이름</label>
-        <input {...inputProps} type="text" id="user-input" className="my-2" />
+        <input type="text" id="user-input" className="my-2" {...inputProps} />
         <output>{inputProps.value || '이름 값 출력'}</output>
       </div>
       <button
