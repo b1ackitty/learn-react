@@ -1,13 +1,15 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 export default function useToggleState(initialValue: boolean = true) {
-  const [toggle, setToggle] = useState<boolean>(initialValue)
+  const [isToggle, setIsToggle] = useState<boolean>(initialValue)
 
-  const update = () => setToggle((t) => !t)
+  const on = useCallback(() => setIsToggle(true), [])
+  const off = useCallback(() => setIsToggle(false), [])
+  const toggle = useCallback(() => setIsToggle((t) => !t), [])
 
   useEffect(() => {
-    setToggle(initialValue)
+    setIsToggle(initialValue)
   }, [initialValue])
 
-  return [toggle, update] as const
+  return [toggle, { on, off, toggle }] as const
 }
