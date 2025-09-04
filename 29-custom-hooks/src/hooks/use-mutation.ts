@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useImmer } from 'use-immer'
-import type { State, Status } from '@/@types/global'
+import type { State } from '@/@types/global'
 
 export default function useMutation<A, R>({
   mutateFn,
