@@ -1,5 +1,5 @@
 import type { MouseEvent } from 'react'
-import { Profile } from '@/libs/supabase'
+import { ProfilePartial } from '@/libs/supabase'
 import { navigate, tw } from '@/utils'
 import { Page } from './navigation'
 
@@ -10,7 +10,7 @@ export interface NavigationItem {
 }
 
 interface Props {
-  user: Partial<Profile> | null
+  user: ProfilePartial | null
   item: NavigationItem
 }
 
