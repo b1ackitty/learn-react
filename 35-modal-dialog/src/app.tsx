@@ -56,6 +56,12 @@ export default function App() {
           참고
         </a>
       </div>
+
+      {Array(6)
+        .fill(null)
+        .map((_, i) => (
+          <div key={i} className="h-screen bg-amber-300" />
+        ))}
     </div>
   )
 }
