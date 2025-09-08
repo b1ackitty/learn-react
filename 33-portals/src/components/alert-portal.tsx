@@ -1,7 +1,10 @@
 import { type PropsWithChildren } from 'react'
 import { createPortal } from 'react-dom'
 
-export default function AlertPortal({ children }: PropsWithChildren) {
+export default function AlertPortal({
+  message,
+  children,
+}: PropsWithChildren<{ message?: string }>) {
   // SSR 대응
   if (typeof document === 'undefined') return null
 
@@ -10,7 +13,7 @@ export default function AlertPortal({ children }: PropsWithChildren) {
 
   return createPortal(
     <div className="p-6 border-5 border-indigo-600 text-indigo-700 font-semibold">
-      {children}
+      {children} ({message})
     </div>,
     alertPortal
   )
