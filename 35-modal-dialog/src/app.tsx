@@ -60,7 +60,7 @@ export default function App() {
       {Array(6)
         .fill(null)
         .map((_, i) => (
-          <div key={i} className="h-screen bg-amber-300" />
+          <div key={i} className="h-screen max-w-lg bg-amber-300" />
         ))}
     </div>
   )
