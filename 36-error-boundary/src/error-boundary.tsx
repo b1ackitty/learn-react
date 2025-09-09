@@ -39,6 +39,7 @@ export default class ErrorBoundary extends Component<Props, State> {
     const { fallbackRender, fallback: FallbackComponent, children } = this.props // 속성
     const { hasError, error, errorInfo } = this.state // 상태
 
+    // 컴포넌트 렌더링에 오류가 발생한 경우
     if (hasError) {
       return fallbackRender
         ? fallbackRender({ error, errorInfo })
