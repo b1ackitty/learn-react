@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
+import { type Props } from '@/app'
 import Logo from './logo'
 import Output from './output'
 import Shortcut from './shortcut'
@@ -10,7 +11,7 @@ const MIN = 50
 const MAX = 90
 const getTargetCount = () => getRandomCount(MIN, MAX)
 
-export default function RandomCountUp() {
+export default function RandomCountUp({ mood, currentYear }: Props) {
   // ------------------------------------------------------------
   // 목표 카운트 설정 및 문서 제목 변경 동기화
 
@@ -77,7 +78,7 @@ export default function RandomCountUp() {
     <div className="randomCountUpApp">
       <Logo />
       <Output key={replay} count={count} targetCount={targetCount} />
-      <Shortcut />
+      <Shortcut mood={mood} currentYear={currentYear} />
     </div>
   )
 }
