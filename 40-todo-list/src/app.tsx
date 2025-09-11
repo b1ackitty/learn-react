@@ -6,8 +6,8 @@ export default function App() {
     <LearnSection title="할 일 목록 (리듀서 + 컨텍스트)" className="p-10">
       <Container>
         <TodoListApp />
-        <Divider />
-        <TodoListAppGuide />
+        {/* <Divider />
+        <TodoListAppGuide /> */}
       </Container>
     </LearnSection>
   )

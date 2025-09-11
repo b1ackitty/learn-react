@@ -24,15 +24,15 @@ export default function TodoItem({ item }: { item: Todo }) {
           {item.doit}
         </label>
       </div>
+      <button className="button" type="button" data-button-edit>
+        수정
+      </button>
       <button
         className="button"
         type="button"
         onClick={handleRemoveTodo}
-        data-button-edit
+        data-button-delete
       >
-        수정
-      </button>
-      <button className="button" type="button" data-button-delete>
         삭제
       </button>
     </li>
