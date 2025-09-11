@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { type RefObject, useRef, useState } from 'react'
 import { tw } from '@/utils'
 import { useTodoList } from '../../context'
 import type { Todo } from '../../types'
@@ -9,12 +9,24 @@ export default function TodoItem({ item }: { item: Todo }) {
   const handleRemoveTodo = () => remove(item.id)
   const handleToggleTodo = () => toggle(item.id)
 
+  const editInputRef = useRef<HTMLInputElement>(null)
   const [editMode, setEditMode] = useState<boolean>(false)
-  const handleEditModeOn = () => setEditMode(true)
+
+  const handleEditModeOn = () => {
+    setEditMode(true)
+  }
+
   const handleEditModeOff = () => setEditMode(false)
 
-  if (editMode)
-    return <EditMode item={item} onEditModeOff={handleEditModeOff} />
+  if (editMode) {
+    return (
+      <EditMode
+        ref={editInputRef}
+        item={item}
+        onEditModeOff={handleEditModeOff}
+      />
+    )
+  }
 
   return (
     <li className={S.listItem}>
@@ -55,19 +67,19 @@ export default function TodoItem({ item }: { item: Todo }) {
 }
 
 function EditMode({
+  ref: inputRef,
   item,
   onEditModeOff,
 }: {
+  ref: RefObject<HTMLInputElement | null>
   item: Todo
   onEditModeOff: () => void
 }) {
-  const inputRef = useRef<HTMLInputElement>(null)
   const { edit } = useTodoList()
 
   const handleSave = () => {
     const input = inputRef.current
-    if (!input) return
-    edit(item.id, input.value)
+    if (input) edit(item.id, input.value)
     onEditModeOff()
   }
 
