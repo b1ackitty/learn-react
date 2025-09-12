@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
-import { AuthError, Session, User } from '@supabase/supabase-js'
+import type { AuthError, Session, User } from '@supabase/supabase-js'
 import {
-  ReactNode,
+  type PropsWithChildren,
   createContext,
   useContext,
   useEffect,
@@ -11,12 +11,17 @@ import {
 import { toast } from 'sonner'
 import supabase from '@/libs/supabase'
 
-// 인증 컨텍스트에서 제공할 값들의 타입 정의
-interface AuthContextType {
+// --------------------------------------------------------------------------
+// Auth 컨텍스트 타입 정의
+
+interface AuthContextValue {
   user: User | null
   session: Session | null
   isLoading: boolean
   isAuthenticated: boolean
+}
+
+interface AuthContextDispatchValue {
   signUp: (
     email: string,
     password: string,
@@ -29,22 +34,22 @@ interface AuthContextType {
   signOut: () => Promise<{ error: AuthError | null }>
 }
 
-// 컨텍스트 기본값 생성
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+// --------------------------------------------------------------------------
+// Auth 컨텍스트 생성
 
-// AuthProvider Props 타입 정의
-interface AuthProviderProps {
-  children: ReactNode
-}
+const AuthContext = createContext<AuthContextValue | null>(null)
+AuthContext.displayName = 'AuthContext'
 
-// AuthProvider 컴포넌트 구현
-export function AuthProvider({ children }: AuthProviderProps) {
+const AuthContextDispach = createContext<AuthContextDispatchValue | null>(null)
+AuthContextDispach.displayName = 'AuthContextDispach'
+
+// --------------------------------------------------------------------------
+// AuthProvider 컴포넌트
+
+export function AuthProvider({ children }: PropsWithChildren) {
   const [user, setUser] = useState<User | null>(null)
   const [session, setSession] = useState<Session | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-
-  // 인증 상태가 있는지 계산된 값
-  const isAuthenticated = useMemo(() => !!user, [user])
+  const [isLoading, setIsLoading] = useState<boolean>(true)
 
   useEffect(() => {
     // 초기 사용자 세션 가져오기
@@ -53,14 +58,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setIsLoading(true)
 
         // 현재 세션 가져오기
-        const {
-          data: { session },
-        } = await supabase.auth.getSession()
+        const { data } = await supabase.auth.getSession()
+        const { session } = data
         setSession(session)
         setUser(session?.user ?? null)
       } catch (error) {
         console.error('세션 가져오기 오류:', error)
-        toast.error('인증 정보를 가져오는 중 문제가 발생했습니다')
+        toast.error('인증 정보를 가져오는 중 문제가 발생했습니다.')
       } finally {
         setIsLoading(false)
       }
@@ -81,86 +85,115 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }, [])
 
-  // 회원가입 함수
-  const signUp = async (email: string, password: string, username: string) => {
-    try {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: { username },
-        },
-      })
+  // 인증 상태 컨텍스트 값
+  const state: AuthContextValue = useMemo(
+    () => ({
+      user,
+      session,
+      isLoading,
+      isAuthenticated: !!user,
+    }),
+    [isLoading, session, user]
+  )
 
-      if (!error) {
-        toast.success('회원가입이 성공적으로 완료되었습니다!')
+  // 인증 상태 업데이트 함수 컨텍스트 값
+  const actions: AuthContextDispatchValue = useMemo(() => {
+    // 회원가입 함수
+    const signUp = async (
+      email: string,
+      password: string,
+      username: string
+    ) => {
+      try {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: { username },
+          },
+        })
+
+        if (!error) {
+          toast.success('회원가입이 성공적으로 완료되었습니다!')
+        }
+
+        return { error }
+      } catch (error) {
+        console.error('회원가입 오류:', error)
+        toast.error('회원가입 중 문제가 발생했습니다')
+        return { error: error as AuthError }
       }
-
-      return { error }
-    } catch (error) {
-      console.error('회원가입 오류:', error)
-      toast.error('회원가입 중 문제가 발생했습니다')
-      return { error: error as AuthError }
     }
-  }
 
-  // 로그인 함수
-  const signIn = async (email: string, password: string) => {
-    try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      })
+    // 로그인 함수
+    const signIn = async (email: string, password: string) => {
+      try {
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        })
 
-      if (!error) {
-        toast.success('로그인에 성공했습니다!')
+        if (!error) {
+          toast.success('로그인에 성공했습니다!')
+        }
+
+        return { error }
+      } catch (error) {
+        console.error('로그인 오류:', error)
+        toast.error('로그인 중 문제가 발생했습니다')
+        return { error: error as AuthError }
       }
-
-      return { error }
-    } catch (error) {
-      console.error('로그인 오류:', error)
-      toast.error('로그인 중 문제가 발생했습니다')
-      return { error: error as AuthError }
     }
-  }
 
-  // 로그아웃 함수
-  const signOut = async () => {
-    try {
-      const { error } = await supabase.auth.signOut()
+    // 로그아웃 함수
+    const signOut = async () => {
+      try {
+        const { error } = await supabase.auth.signOut()
 
-      if (!error) {
-        toast.success('로그아웃 되었습니다')
+        if (!error) {
+          toast.success('로그아웃 되었습니다')
+        }
+
+        return { error }
+      } catch (error) {
+        console.error('로그아웃 오류:', error)
+        toast.error('로그아웃 중 문제가 발생했습니다')
+        return { error: error as AuthError }
       }
-
-      return { error }
-    } catch (error) {
-      console.error('로그아웃 오류:', error)
-      toast.error('로그아웃 중 문제가 발생했습니다')
-      return { error: error as AuthError }
     }
-  }
 
-  // 컨텍스트 값
-  const value = {
-    user,
-    session,
-    isLoading,
-    isAuthenticated,
-    signUp,
-    signIn,
-    signOut,
-  }
+    return {
+      signUp,
+      signIn,
+      signOut,
+    }
+  }, [])
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+  return (
+    <AuthContextDispach value={actions}>
+      <AuthContext value={state}>{children}</AuthContext>
+    </AuthContextDispach>
+  )
 }
 
-// 커스텀 훅
-export function useAuth() {
+// --------------------------------------------------------------------------
+// Auth 컨텍스트 커스텀 훅
+
+export function useAuth(): AuthContextValue {
   const contextValue = useContext(AuthContext)
 
-  if (contextValue === undefined) {
+  if (!contextValue) {
     throw new Error('useAuth는 AuthProvider 내부에서 사용해야 합니다.')
+  }
+
+  return contextValue
+}
+
+export function useAuthDispatch(): AuthContextDispatchValue {
+  const contextValue = useContext(AuthContextDispach)
+
+  if (!contextValue) {
+    throw new Error('useAuthDispatch는 AuthProvider 내부에서 사용해야 합니다.')
   }
 
   return contextValue
