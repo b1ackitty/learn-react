@@ -6,7 +6,7 @@ import {
   useRef,
   useState,
 } from 'react'
-import { type Todo } from '@/libs/supabase'
+import type { Todo } from '@/libs/supabase'
 import { deleteTodo, updateTodo } from '@/libs/supabase/api/todos'
 import { tw } from '@/utils'
 import { useTodoListDispatch } from '../../context'
@@ -24,9 +24,9 @@ export default function TodoItem({ todo }: { todo: Todo }) {
     removeTodo(deletedTodo.id)
   }
 
-  // 할 일 완료 여부 토글 기능
+  // 할 일 완료 여부 토글 기능(비동기 함수로 변경)
   const handleToggle = async (e: ChangeEvent<HTMLInputElement>) => {
-    // 비동기 처리(Supabase 단에서 처리)
+    // 비동기 처리(Superbase 단에서 처리)
     const updatedTodo = await updateTodo({
       id: todo.id,
       done: e.target.checked,
@@ -123,7 +123,7 @@ function EditMode({
       // TodoList 컨텍스트 상태 업데이트
       onEdit(updatedTodo)
 
-      // 편집 모드 종료(일반 모드로 변경)
+      // 편집 모드 종료 (일반 모드로 변경)
       onEditModeOff()
     }
   }, [onEdit, onEditModeOff, todo, ref])

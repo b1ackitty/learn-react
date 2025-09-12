@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Dialog } from '@/components'
 import { SignInForm, SignUpForm } from '@/components/form'
-import { useAuth } from '@/contexts/auth'
+import { useAuth, useAuthDispatch } from '@/contexts/auth'
 import { useToggleState } from '@/hooks'
 import { tw } from '@/utils'
 import SupabaseLogo from './supabase-logo'
@@ -10,7 +10,8 @@ type FormType = 'signin' | 'signup'
 
 export default function Header() {
   // 인증 컨텍스트 사용
-  const { user, isLoading, signOut } = useAuth()
+  const { user, isLoading } = useAuth()
+  const { signOut } = useAuthDispatch()
 
   // 다이얼로그 열기 상태
   const [isOpen, { toggle: toggleDialog }] = useToggleState(false)
