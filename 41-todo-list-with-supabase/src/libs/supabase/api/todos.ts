@@ -46,7 +46,7 @@ export const readTodos = async (): Promise<Todo[]> => {
     throw new Error(errorMessage)
   }
 
-  return todos
+  return todos ?? []
 }
 
 // --------------------------------------------------------------------------
