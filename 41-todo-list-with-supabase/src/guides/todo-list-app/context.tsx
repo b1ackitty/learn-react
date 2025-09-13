@@ -47,10 +47,10 @@ export default function TodoListProvider({
 }: PropsWithChildren<{ persist?: boolean }>) {
   const [state, dispatch] = useImmerReducer(reducer, initialState, init)
 
-  const { isAuthenticated, user } = useAuth()
+  const { isAuthenticated } = useAuth()
 
   useEffect(() => {
-    if (isAuthenticated && user) {
+    if (isAuthenticated) {
       // 로그인 시, todos 데이터 가져오기
       readTodos().then((todos) => {
         dispatch(setTodosAction(todos))
@@ -59,19 +59,14 @@ export default function TodoListProvider({
       // 로그아웃 시, todos 데이터 초기화
       dispatch(setTodosAction([]))
     }
-  }, [dispatch, isAuthenticated, user])
-
-  // [부수효과] Supabase 데이터베이스의 Todos 테이블 행(rows) 데이터 조회 요청
-  useEffect(() => {
-    readTodos().then((todos) => {
-      dispatch(setTodosAction(todos))
-    })
-  }, [dispatch])
+  }, [dispatch, isAuthenticated])
 
   useEffect(() => {
     if (persist) {
+      // 웹 스토리지에 데이터 저장
       setTodoListStorageData(state)
     } else {
+      // 웹 스토리지에서 데이터 삭제
       removeTodoListStorageData()
     }
   }, [state, persist])
@@ -98,11 +93,9 @@ export default function TodoListProvider({
   )
 
   return (
-    <TodoListContext value={state}>
-      <TodoListDispatchContext value={actions}>
-        {children}
-      </TodoListDispatchContext>
-    </TodoListContext>
+    <TodoListDispatchContext value={actions}>
+      <TodoListContext value={state}>{children}</TodoListContext>
+    </TodoListDispatchContext>
   )
 }
 
