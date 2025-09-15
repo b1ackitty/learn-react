@@ -22,7 +22,7 @@ export type Database = {
           id: string
           profile_image: string | null
           updated_at: string | null
-          username: string
+          username: string | null
         }
         Insert: {
           bio?: string | null
@@ -31,7 +31,7 @@ export type Database = {
           id?: string
           profile_image?: string | null
           updated_at?: string | null
-          username: string
+          username?: string | null
         }
         Update: {
           bio?: string | null
@@ -40,7 +40,7 @@ export type Database = {
           id?: string
           profile_image?: string | null
           updated_at?: string | null
-          username?: string
+          username?: string | null
         }
         Relationships: []
       }
