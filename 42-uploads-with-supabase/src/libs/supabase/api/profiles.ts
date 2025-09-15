@@ -23,3 +23,45 @@ export const getUserDataFromProfileDB = async (): Promise<UserData> => {
 
   return data
 }
+
+export const updateUserMetadata = async (
+  email: Profile['email'],
+  username: Profile['username'],
+  bio: Profile['bio']
+): Promise<void> => {
+  if (!email) return
+
+  const { error: authUpdateError } = await supabase.auth.updateUser({
+    email,
+    data: { username, bio },
+  })
+
+  if (authUpdateError) {
+    const errorMessage = `프로필 업데이트 오류 발생! ${authUpdateError.message}`
+    toast.error(errorMessage)
+    throw new Error(errorMessage)
+  }
+}
+
+export const updateProfileTable = async (
+  email: Profile['email'],
+  username: Profile['username'],
+  bio: Profile['bio']
+): Promise<Omit<UserData, 'profile_image'>> => {
+  const user = await requiredUser()
+
+  const { error, data } = await supabase
+    .from('profiles')
+    .update({ username, email, bio, updated_at: new Date().toISOString() })
+    .eq('id', user.id)
+    .select('username, email, bio')
+    .single()
+
+  if (error) {
+    const errorMessage = `프로필 테이블 업데이트 오류 발생! ${error.message}`
+    toast.error(errorMessage)
+    throw new Error(errorMessage)
+  }
+
+  return data
+}
