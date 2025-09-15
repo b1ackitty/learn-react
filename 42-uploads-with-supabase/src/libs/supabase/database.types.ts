@@ -18,29 +18,29 @@ export type Database = {
         Row: {
           bio: string | null
           created_at: string
-          email: string | null
+          email: string
           id: string
           profile_image: string | null
           updated_at: string | null
-          username: string | null
+          username: string
         }
         Insert: {
           bio?: string | null
           created_at?: string
-          email?: string | null
+          email: string
           id?: string
           profile_image?: string | null
           updated_at?: string | null
-          username?: string | null
+          username: string
         }
         Update: {
           bio?: string | null
           created_at?: string
-          email?: string | null
+          email?: string
           id?: string
           profile_image?: string | null
           updated_at?: string | null
-          username?: string | null
+          username?: string
         }
         Relationships: []
       }
