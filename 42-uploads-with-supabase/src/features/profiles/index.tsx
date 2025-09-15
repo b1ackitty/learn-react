@@ -127,6 +127,7 @@ export default function Profile() {
       const { error: profileUpdateError, data: updatedProfileData } =
         await supabase
           .from('profiles')
+          // RLS 보안 정책 없어요! (수정 불가능 오류)
           .update({
             username: formData.username,
             email: formData.email,
@@ -145,6 +146,7 @@ export default function Profile() {
 
       // 폼 데이터를 응답받은 profiles 테이블의 데이터로 재설정
       const { username, email, bio } = updatedProfileData
+
       if (email) {
         reset({
           username,
