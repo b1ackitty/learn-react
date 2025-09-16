@@ -20,7 +20,7 @@ function Page() {
         </div>
 
         <Pagination />
-        {/* <SlowList /> */}
+        <SlowList />
         <Tabs />
       </section>
     </>
