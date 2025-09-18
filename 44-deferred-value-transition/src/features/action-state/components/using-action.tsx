@@ -1,4 +1,4 @@
-import { type FormEvent, useId, useRef, useState, useTransition } from 'react'
+import { useId, useState, useTransition } from 'react'
 import { tw, wait } from '@/utils'
 
 // [이전 방식]
@@ -32,9 +32,7 @@ export default function UsingAction() {
   return (
     <form
       // action={actionFunc}
-      className={tw(
-        'max-w-xs mx-auto mt-10 p-6 bg-white rounded-lg shadow space-y-4'
-      )}
+      className={tw('max-w-xs mt-2 p-6 bg-white rounded-lg shadow space-y-4')}
     >
       <label htmlFor={id} className="block text-slate-800 font-semibold">
         나이 변경
