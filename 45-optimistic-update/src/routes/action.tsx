@@ -32,7 +32,7 @@ function Page() {
             mt-5
           `}
         >
-          <article hidden className="my-5 w-full lg:max-w-3/4">
+          <article className="my-5 w-full lg:max-w-3/4">
             <h3 className="text-2xl text-indigo-600 flex items-center gap-x-1">
               TodoList +{' '}
               <code className="bg-indigo-100 pt-0 pb-0.5 px-2 rounded text-xl">
@@ -53,7 +53,7 @@ function Page() {
               </h3>
               <OptimisticUI />
             </article>
-            <article hidden className="my-5">
+            <article className="my-5">
               <h3 className="text-2xl text-indigo-600 flex items-center gap-x-1">
                 <code className="bg-indigo-100 pt-0 pb-0.5 px-2 rounded text-xl">
                   useActionState
