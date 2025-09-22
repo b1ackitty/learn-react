@@ -1,4 +1,9 @@
 import { Section } from '@/components'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: '대시보드 프로필 | LearnMate',
+}
 
 export default function DashboardProfile() {
   return (

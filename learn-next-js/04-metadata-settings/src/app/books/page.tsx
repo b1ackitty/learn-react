@@ -1,4 +1,9 @@
 import { Section } from '@/components'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: '추천 도서 목록 | LearnMate',
+}
 
 export default function BooksPage() {
   return (
