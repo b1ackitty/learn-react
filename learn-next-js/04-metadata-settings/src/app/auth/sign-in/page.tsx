@@ -2,7 +2,7 @@ import { Section } from '@/components'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: '로그인 | LearnMate',
+  title: '로그인',
 }
 
 export default function SignInPage() {

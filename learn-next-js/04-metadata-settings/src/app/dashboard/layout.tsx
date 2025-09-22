@@ -3,7 +3,10 @@ import type { PropsWithChildren } from 'react'
 import { metadata as RootMetadata } from '@/app/layout'
 
 export const metadata: Metadata = {
-  title: '대시보드 | LearnMate',
+  title: {
+    template: '%s < 대시보드 | 런메이트(LearnMate)',
+    default: '대시보드 | 런메이트(LearnMate)',
+  },
   openGraph: {
     ...RootMetadata.openGraph,
     images: [
