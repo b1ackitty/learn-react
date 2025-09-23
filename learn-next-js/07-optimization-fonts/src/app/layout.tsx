@@ -1,6 +1,6 @@
 import type { PropsWithChildren } from 'react'
 import type { Metadata } from 'next'
-import { notoSansKR } from '@/fonts'
+import fonts from '@/fonts'
 import { NavLink } from '@/components'
 import '@/styles/main.css'
 import { tw } from '@/utils'
@@ -46,7 +46,11 @@ export default function RootLayout({ children }: PropsWithChildren) {
         />
       </head>
       <body
-        className={tw('overflow-y-scroll antialiased', notoSansKR.className)}
+        className={tw(
+          'overflow-y-scroll antialiased',
+          fonts.spoqaHandSansNeo.variable,
+          fonts.pretendard.variable
+        )}
       >
         <header
           className={tw(
