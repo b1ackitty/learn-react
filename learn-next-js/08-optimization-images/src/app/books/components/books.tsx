@@ -16,6 +16,7 @@ export default function Books({ items }: Props) {
           `}
         >
           <div className="flex p-4">
+            {/* relative 추가해야 이미지가 이상하게 커지지 않음 */}
             <div className="relative w-24 h-32 flex-shrink-0 mr-3">
               <Image
                 // src="https://images.pexels.com/photos/32314614/pexels-photo-32314614.jpeg"
@@ -27,6 +28,7 @@ export default function Books({ items }: Props) {
                 height={174}
                 // fill
                 className="w-full h-full object-cover rounded border-1 border-slate-500/30"
+                // aria-hidden="true"
                 alt=""
               />
             </div>
