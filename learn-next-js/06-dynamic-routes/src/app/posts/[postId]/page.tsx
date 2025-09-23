@@ -5,6 +5,7 @@ import {
   fetchSinglePostById,
   fetchUserById,
 } from '../api'
+import { LucideHeart } from 'lucide-react'
 
 export default async function PostDetailPage({ params }: Props) {
   const { postId } = await params
